@@ -1,0 +1,45 @@
+---
+title: 'A Replication and Review: Female sociality and sexual conflict shape offspring
+  survival in a Neotropical primate'
+author: "Zoe Albert"
+date: "2021"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**A Brief Introduction**
+
+In a 2017 paper by Kalbitzer et al., researchers studying wild white-faced Capuchin monkeys living in Santa Rosa, Costa Rica set out to answer the question "what is the relationship between female sociality, offspring survival, and infanticide risk"?
+
+Their study is based upon the knowledge that most mammalian species live in social groups and they may vary in degrees of sociality, which yield differential fitness.  A few studies published prior to this one argued that female sociality has a positive impact on infant survival.  However, no studies looked at the role that male reproductive strategies, notably infanticide, might influence the effects that female sociality has on infant survival. 
+
+We know that the reproductive strategies of males and females differ and that this may result in sexual conflict.  We know too that infanticide significantly increases during periods of alpha male replacements. 
+
+In the tables and figures that follow, I will illustrate some of the key findings from their work:
+
+1. Offspring of highly social and high ranking females had higher survivorship during *stable* periods.
+
+2. Offspring of highly social and high ranking females were more likely to die/disappear during periods of alpha male replacements.
+
+  + This is likely because new alpha males move to the center of the group, where highly social females are located. 
+  
+**Therefore** it is clear that female sociality may sometimes have negative fitness consequences due to male behavior.   
+
+```{r - Download Data}
+#We begin by downloading the data, so that we may work with it. 
+library(curl)
+f <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+summary(d)
+names(d)
+```
+
+
+```{r - Table 1. Perdictors of Dyadic Bond Strength}
+# Reading the data
+df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+df
+```
