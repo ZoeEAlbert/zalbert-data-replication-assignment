@@ -1,0 +1,79 @@
+---
+title: 'A Replication and Review: Female sociality and sexual conflict shape offspring survival in a Neotropical primate'
+author: "Zoe Albert"
+date: "2021"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Hi reader,
+
+I am about to walk you through a paper entitled Female sociality and sexual conflict shape offspring survival in a Neotropical primate by Kalbitzer et al. (2017).  Before we begin, lets install the following packages: **lme4**  
+
+```{r}
+install.packages("lme4",
+   repos=c("http://lme4.r-forge.r-project.org/repos",
+      getOption("repos")[["CRAN"]]))
+```
+
+
+
+**A Brief Introduction**
+
+In a 2017 paper by Kalbitzer et al., researchers studying wild white-faced Capuchin monkeys living in Santa Rosa, Costa Rica set out to answer the question "what is the relationship between female sociality, offspring survival, and infanticide risk"?
+
+Their study is based upon the knowledge that most mammalian species live in social groups and they may vary in degrees of sociality, which yield differential fitness.  A few studies published prior to this one argued that female sociality has a positive impact on infant survival.  However, no studies looked at the role that male reproductive strategies, notably infanticide, might influence the effects that female sociality has on infant survival. 
+
+We know that the reproductive strategies of males and females differ and that this may result in sexual conflict.  We know too that infanticide significantly increases during periods of alpha male replacements. 
+
+In the tables and figures that follow, I will illustrate some of the key findings from their work:
+
+1. Offspring of highly social and high ranking females had higher survivorship during *stable* periods.
+
+2. Offspring of highly social and high ranking females were more likely to die/disappear during periods of alpha male replacements.
+
+  + This is likely because new alpha males move to the center of the group, where highly social females are located. 
+  
+**Therefore** it is clear that female sociality may sometimes have negative fitness consequences due to male behavior.   
+
+```{r - Download Data}
+#We begin by downloading the data, so that we may work with it. 
+library(curl)
+f <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+summary(d)
+names(d)
+```
+
+
+Female social bonds vary between and within dyads.  The coefficient of variation was **86%** between dyads and **67%** within the same dyad over time.  The variation in bond strength *both within and between* dyads is significantly related to three of the tested variables;
+
+1. Relatedness (R-Value)
+
+2. Dominance rank difference
+
+3. Presence of female infants 
+```{r - Table 1. Perdictors of Dyadic Bond Strength}
+
+df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+```
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
