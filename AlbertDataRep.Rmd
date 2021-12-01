@@ -2,14 +2,20 @@
 title: 'A Replication and Review: Female sociality and sexual conflict shape offspring survival in a Neotropical primate'
 author: "Zoe Albert"
 date: "2021"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 3
+    toc_float: TRUE
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
+```    
 Hi reader,
 
-I am about to walk you through a paper entitled Female sociality and sexual conflict shape offspring survival in a Neotropical primate by Kalbitzer et al. (2017).  Before we begin, lets install the following packages: **lme4**  
+I am about to walk you through a paper entitled Female sociality and sexual conflict shape offspring survival in a Neotropical primate by Kalbitzer et al. (2017).
+
+Before we begin, lets install the following packages: **lme4**  
 
 ```{r, eval=FALSE}
 #Here is the code to install lme4.
@@ -18,7 +24,7 @@ install.packages("lme4",
       getOption("repos")[["CRAN"]]))
 ```
 
-**A Brief Introduction**
+# **A Brief Introduction**
 
 In a 2017 paper by Kalbitzer et al., researchers studying wild white-faced Capuchin monkeys living in Santa Rosa, Costa Rica set out to answer the question "what is the relationship between female sociality, offspring survival, and infanticide risk"?
 
@@ -53,6 +59,8 @@ Female social bonds vary between and within dyads.  The coefficient of variation
 
 3. Presence of female infants 
 
+# ***Predictors of Dyadic Bond Strength*** 
+
 The first thing we are going to do is replicate the first table in the paper.  Table 1 illustrates the following predictors of dyadic bond strength: R-value, Age difference, Rank difference, Male infant present, Female infant present.
 ```{r - Table 1. Predictors of Dyadic Bond Strength, message=FALSE, warning=FALSE}
 
@@ -76,9 +84,11 @@ reduced <- lmer(data = d, duration ~ parity + (1 + reprocondition | subject) +
 
 anova(reduced, full, test = "Chisq")
 
-This next figure is a histogram
-```{r- Figure 1.}
+# ***         ***
+This next figure is a histogram comparing kin category to dyadic bond strength.
+```{r- Figure .}
 ```
 
-```{r - Figure 2.}
+# ***          ***
+```{r - Figure S2.}
 ```
