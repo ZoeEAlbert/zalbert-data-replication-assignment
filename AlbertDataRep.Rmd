@@ -17,7 +17,7 @@ I am about to walk you through a paper entitled Female sociality and sexual conf
  
 ![Zoe with one of the Stars of the Paper](Zoe (1).JPG)
 
-Before we begin, lets install the following packages: **lme4**  
+Before we begin, lets install the following packages: **lme4**
 ```{r, eval=FALSE}
 #Here is the code to install lme4.
 install.packages("lme4",
@@ -34,7 +34,7 @@ Their study is based upon the knowledge that most mammalian species live in soci
 We know that the reproductive strategies of males and females differ and that this may result in sexual conflict.  We know too that infanticide significantly increases during periods of alpha male replacements. 
 
 In the tables and figures that follow, I will illustrate some of the key findings from their work:
-
+ 
 1. Offspring of highly social and high ranking females had higher survivorship during *stable* periods.
 
 2. Offspring of highly social and high ranking females were more likely to die/disappear during periods of alpha male replacements.
@@ -69,10 +69,9 @@ The first thing we are going to do is replicate the first table in the paper.  T
 df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv") #Let's first get our data into a data frame.
 
 library(lme4) #Now, let's go to the library to get the package (lme4) that we need. 
-
 ```
 
-lme <- lmer(data = df, RValue_Dyad ~ AgeDifference_years_Dyad + PresenceMaleInfant_IndividualA)
+lme4 <- lmer(data = df, DSI ~ Intercept + RValue_Dyad + AgeDifference_years_Dyad )
 
 summary(lme)
 
@@ -90,11 +89,51 @@ As a point of reference, here is what it should look like, based upon the paper.
 ![Table 1, as seen in the original paper](Table 1.2.png)
 
 
-## ***Stability of Bonds with Top Three Partners***
-This next figure is a histogram measuring Partner Stability Index by frequency.
-```{r- Figure S2 .}
+## ***Dyadic bond strength among different kin categories***
+
+```{r - Figure 1.}
+str(d)
+d[8]<-as.factor(d$KinshipCategory_Dyad)
+DSI<- log(d$DSI+.1)
+plot(d$KinshipCategory_Dyad, log(d$DSI+.1))
 ```
- 
+  
 ## ***          ***
-```{r - Figure S2.}
+```{r - Figure S5}
+#Because the data on dyad was incomplete, I first had to do some data manipulation
+group1<- subset(d, Group_ID == 1)
+group1
+View(group1)
+group1A<-group1[1:5]
+group1B<-group1[10:11]
+group1<-cbind(group1A, group1B)
+ID<-group1[3, 5:6]
+View(ID)
+ID1<-group1[3]
+ID2<-group1[5:6]
+ID<-cbind(ID1, ID2)
+View(ID)
+ID1<-group1[c(1:20),]
+View(ID1)
+ID1<-ID1[4:5]
+ID1<-group1[c(1:20),]
+ID2<-ID1[4:5]
+ID3<-ID1[7]
+ID1<-cbind(ID1, ID2)
+ID1<-cbind(ID2, ID3)
+cols<-c("ID", "Year","Rank")
+colnames(ID)<-cols
+colnames(ID1)<-cols
+group1_r<-rbind(ID, ID1)
+View(group1_r)
+
+#Next,
+
+plot(group1_r$Year, group1_r$Rank)
+plot(group1_r$Year, group1_r$Rank, pch = 19, 
+     col=c("red", "blue", "green", "orange", "purple", "pink", "black", "brown", "grey", "yellow", "red"),xlab = "x", ylab = "y")
+# Add a legend to the plot
+legend("topright", legend=c("1", "2", "8", "11", "18", "26", "27", "28", "29", "30", "32"),
+       col=c("red", "blue", "green", "orange", "purple", "pink", "black", "brown", "grey", "yellow", "red"), lty = 1:2, cex=0.8)
+
 ```
