@@ -1,5 +1,5 @@
 ---
-title: 'A Replication and Review: Female sociality and sexual conflict shape offspring survival in a Neotropical primate'
+title: 'A Replication and Review: Female sociality and sexual conflict shape offspring survival in a Neotropical primate' 
 author: "Zoe Albert"
 date: "2021"
 output: 
@@ -13,10 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```    
 Hi reader,
 
-I am about to walk you through a paper entitled Female sociality and sexual conflict shape offspring survival in a Neotropical primate by Kalbitzer et al. (2017).
+I am about to walk you through a paper entitled Female sociality and sexual conflict shape offspring survival in a Neotropical primate by Kalbitzer et al. (2017).  The reason I chose this paper is because it is a study of the Capuchin monkeys who made me fall in love with primatology.  On the particularly hard days, they are what remind me why I am here.
+ 
+![Zoe with one of the Stars of the Paper](Zoe (1).JPG)
 
 Before we begin, lets install the following packages: **lme4**  
-
 ```{r, eval=FALSE}
 #Here is the code to install lme4.
 install.packages("lme4",
@@ -40,10 +41,11 @@ In the tables and figures that follow, I will illustrate some of the key finding
 
   + This is likely because new alpha males move to the center of the group, where highly social females are located. 
   
-**Therefore** it is clear that female sociality may sometimes have negative fitness consequences due to male behavior.   
+**Therefore** it is clear that female sociality may sometimes have negative fitness consequences due to male behavior.
 
+# **Working with the Data**
+We begin by downloading the data, so that we may work with it.
 ```{r - Download Data,message=FALSE,warning=FALSE}
-#We begin by downloading the data, so that we may work with it. 
 library(curl)
 f <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
 d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
@@ -59,7 +61,7 @@ Female social bonds vary between and within dyads.  The coefficient of variation
 
 3. Presence of female infants 
 
-# ***Predictors of Dyadic Bond Strength*** 
+## ***Predictors of Dyadic Bond Strength*** 
 
 The first thing we are going to do is replicate the first table in the paper.  Table 1 illustrates the following predictors of dyadic bond strength: R-value, Age difference, Rank difference, Male infant present, Female infant present.
 ```{r - Table 1. Predictors of Dyadic Bond Strength, message=FALSE, warning=FALSE}
@@ -84,11 +86,15 @@ reduced <- lmer(data = d, duration ~ parity + (1 + reprocondition | subject) +
 
 anova(reduced, full, test = "Chisq")
 
-# ***         ***
-This next figure is a histogram comparing kin category to dyadic bond strength.
-```{r- Figure .}
-```
+As a point of reference, here is what it should look like, based upon the paper.  
+![Table 1, as seen in the original paper](Table 1.2.png)
 
-# ***          ***
+
+## ***Stability of Bonds with Top Three Partners***
+This next figure is a histogram measuring Partner Stability Index by frequency.
+```{r- Figure S2 .}
+```
+ 
+## ***          ***
 ```{r - Figure S2.}
 ```
