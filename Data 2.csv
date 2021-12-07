@@ -1,4 +1,4 @@
-IndividualA_ID,IndividualB_ID,Year,DSI,Log(DSI+.1),RValue_Dyad,KinshipCategory_Dyad,AgeDifference_years_Dyad,DominanceRank_IndividualA,DominanceRank_IndB,Rank Difference,Centrality_IndividualA,Centrality_IndividualB,PresenceMaleInfant_IndividualA,PresenceFemaleInfant_IndividualA,PresenceMaleInfant_IndividualB,PresenceFemaleInfant_IndividualB,Male Infant Present,
+IndividualA_ID,IndividualB_ID,Year,DSI,Log,RValue_Dyad,KinshipCategory_Dyad,AgeDifference_years_Dyad,DominanceRank_IndividualA,DominanceRank_IndB,Rank Difference,Centrality_IndividualA,Centrality_IndividualB,PresenceMaleInfant_IndividualA,PresenceFemaleInfant_IndividualA,PresenceMaleInfant_IndividualB,PresenceFemaleInfant_IndividualB,Male Infant Present,
 2,1,2010,1.244,0.128399269,0.062,maternal sib,2,0.4,0,0.4,0.742,0.705,0,1,0,0,0,1
 2,1,2011,2.602,0.431685345,0.062,maternal sib,2,0.3,0,0.3,0.838,0.866,0,0,0,0,0,0
 8,1,2010,1.387,0.172310969,0,maternal non-kin,4.9,0.7,0,0.7,0.845,0.705,0,0,0,0,0,0
