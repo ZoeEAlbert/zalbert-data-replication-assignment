@@ -17,7 +17,7 @@ I am about to walk you through a paper entitled Female sociality and sexual conf
  
 ![Pictured Above: Zoe With One Of The Stars Of The Paper!](Zoe (1).JPG)
 
-Before we begin, lets install the following packages: **lme4**, **ggplot2**, **dplyr**
+Before we begin, lets install the following packages: **lme4**, **tidyverse**, **ggplot2**, **ggspignif**, **dplyr**, **ggpubr**
 
 I have included the code to download these packages bellow:
 ```{r, eval=FALSE}
@@ -28,11 +28,12 @@ install.packages("lme4",
 ```
  
 ```{r, eval=FALSE}
-#Here is the code to install ggplot2, ggsignif and dplyr.
+#Here is the code to install ggplot2, ggsignif, dplyr and ggpubr.
 install.packages("tidyverse")
 install.packages("ggplot2")
 install.packages("ggsignif")
 install.packages("dplyr")
+install.packages("ggpubr")
 ```
 
 # **A Brief Introduction**
@@ -62,6 +63,7 @@ d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
 head(d) #This will help us see the top 6 lines of every row. 
 names(d) #Having the names spelled out like this will help us with our model later!
 #For future reference, remember that we are calling our data 'd'.
+df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
 ```
 
 Female social bonds vary between and within dyads.  The coefficient of variation was **86%** between dyads and **67%** within the same dyad over time.  The variation in bond strength *both within and between* dyads is significantly related to three of the tested variables;
@@ -76,17 +78,22 @@ Female social bonds vary between and within dyads.  The coefficient of variation
 
 The first thing we are going to do is replicate the first table in the paper.  Table 1 illustrates the following predictors of dyadic bond strength: R-value, Age difference, Rank difference, Male infant present, Female infant present.
 
-I started by putting the data into a data frame so I could get a better look at it in r. 
+I started by putting the data into a data frame so I could get a better look at it in r.  I won't really need to use this further. 
 ```{r - Table 1. Predictors of Dyadic Bond Strength, message=FALSE, warning=FALSE}
-
-df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv") #Let's first get our data into a data frame.
-
+library(curl)
+f1<-curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Data%202.csv")
+d1 <- read.csv(f1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d1)
+names(df2)
+df2 <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Data%202.csv")
+df2 <- read.csv(df2, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+names(df2)
 library(lme4) #Now, let's go to the library to get the package (lme4) that we need. 
+##########lmm <- lmer(data = df2, Log ~ Rank.Difference + AgeDifference_years_Dyad + RValue_Dyad + Male.Infant.Present + Female.Infant.Present)
+
+summary(lmm)
+
 ```
-
-lme4 <- lmer(data = df, DSI ~ Intercept + RValue_Dyad + AgeDifference_years_Dyad )
-
-summary(lme)
 
 coefficients(lme)
 
@@ -104,9 +111,9 @@ As a point of reference, here is what it should look like, based upon the paper.
 
 ## ***Dyadic bond strength among different kin categories***
 
-The next thing that I wanted to replicate was the first figure from the paper.  This figure shows the dyadic bond strength of each of five kinship categories (mother-offspring, full sib, maternal sib, paternal sib, non-kin).
+The next thing that I wanted to replicate was the first figure from the paper.  This figure shows the dyadic bond strength of each of five kinship categories (mother-offspring, full sib, maternal sib, paternal sib, non-kin). It is REALLY important to copy these categories EXACTLY as they appear in the excel sheet rather than how they appear in the figures.
 ```{r - Figure 1.baseplot}
-#First, let's try using baseplot. 
+#First, let's try using baseplot.  It makes sense to start with this since it is the basic package. 
 str(d)
 d[8]<-as.factor(d$KinshipCategory_Dyad)
 DSI<- log(d$DSI+.1)
@@ -120,13 +127,20 @@ This looks okay, but I think we can make it look better!
 #Next, let's try the same thing but with ggplot to make things a bit more fanciful, and true to the published paper.  By using this package, we are able to add boxes, points, themes and more.  
 library(ggplot2) #Let's invite ggplot to the party. 
 library(ggsignif)
+library(magrittr)
 levels(d$KinshipCategory_Dyad) #The levels function will make sure that my categories can appear in the order I want them to. 
-d$KinshipCategory_Dyad <-factor(d$KinshipCategory_Dyad, levels = c( "mother-offspring", "full sib", "maternal sib", "paternal sib", "non-kin", "Excluded from model testing for effect of kinship categories" )) #I have to list the categories as they appear on the excel document. 
+d$KinshipCategory_Dyad <-factor(d$KinshipCategory_Dyad, levels = c( "mother-offspring", "full sib", "maternal sib", "paternal sib", "maternal non-kin", "Excluded from model testing for effect of kinship categories" )) #I have to list the categories as they appear on the excel document. 
 levels(d$KinshipCategory_Dyad)
 #Please note that after running this code, my kinship categories were not in the same order as they appear in the presented figure.  To fix the order, I used the levels function.
-ggplot(data = d, mapping = aes(x = KinshipCategory_Dyad, y = log(d$DSI+.1)))+geom_boxplot(data = d)+geom_jitter(data=d)+theme_bw()+ geom_signif(comparisons = list("mother-offspring", "full sib", "maternal sib", "paternal sib", "non-kin", "Excluded from model testing for effect of kinship categories"), map_signif_level=TRUE)
+ggplot(data = d, mapping = aes(x = KinshipCategory_Dyad, y = log(d$DSI+.1)))+geom_boxplot(data = d)+geom_jitter(data=d)+theme_bw()+ geom_signif(comparisons = list("mother-offspring", "full sib", "maternal sib", "paternal sib", "non-kin", "Excluded from model testing for effect of kinship categories"), map_signif_level=TRUE)+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+#Bellow is the code that Dr. Schmitt and I worked on together in office hours.  Unfortunatly, when I got home, this code would no longer run nor would it exclude the category "Excluded from model testing for effect of kinship categories".
+    #ggplot(data = d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories"), mapping = aes(x x = = KinshipCategory_Dyad, y = log(DSI+.1)))+ geom_boxplot(data = d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories")) + geom_jitter(data=d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories")) + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
 #I found geom_jitter online and it worked to make sure my points didn't just show up in a straight line!
-#Now, we have one extra category.  We should get rid of it. We also, still want to add the significance.  I have tried many different means of doing this.  And, I am unable to. 
+# We had to manually exclude one of the categories called "Excluded from model testing for effect of kinship categories". I ran into SO many issues because I accidentally was calling one of the categories the wrong name and so it wasn't showing up. 
+#We also, still want to add the significance.  I have tried many different means of doing this.  I think I need to do each one manually, using code found [here](https://cran.r-project.org/web/packages/ggsignif/vignettes/intro.html).  This code does not produce the same kind of lines that I am looking for, I think this must have been accomplished using Photoshop. 
 ```
  ![Based upon the published paper, here is what the graph should actually look like](F1.large.jpg) 
 The graph that we produced looks pretty good compared to the graph that the author's submitted. 
@@ -180,7 +194,7 @@ legend("topright", legend=c("1", "2", "8", "11", "18", "26", "27", "28", "29", "
 library(tidyverse)
 ggplot(data = group1_r, mapping = aes(Year, Rank,group=ID))+  geom_line(aes(linetype=as.character(ID)), color="black", size=1.2)+
   geom_point(aes(shape=as.character(ID)),size=3)
-#scale_shape_manual with the following numbers could make the data points exact: 0:1:2:4:5:6:15:16:17:1:0.
+#scale_shape_manual with the following numbers could make the data points exact: 0:1:2:4:5:6:15:16:17:1:0.  Mel and I could not figure out the exact way to do this. 
 #ggplot you are a beautiful, beautiful little baby!
 ```
 ![Here is the graph as published.  For the graph that we recreated, take a look at the bottom left figure, entitled "Group 1".](F7.large.jpg)
