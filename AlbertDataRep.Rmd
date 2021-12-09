@@ -17,7 +17,7 @@ I am about to walk you through a paper entitled Female sociality and sexual conf
  
 ![Pictured Above: Zoe With One Of The Stars Of The Paper!](Zoe (1).JPG)
 
-Before we begin, lets install the following packages: **lme4**, **tidyverse**, **ggplot2**, **ggspignif**, **dplyr**, **ggpubr**
+Before we begin, lets install the following packages: **lme4**, **tidyverse**, **ggplot2**, **ggspignif**, **dplyr**, **ggpubr**...
 
 I have included the code to download these packages bellow:
 ```{r, eval=FALSE}
@@ -54,16 +54,23 @@ In the tables and figures that follow, I will illustrate some of the key finding
   
 **Therefore** it is clear that female sociality may sometimes have negative fitness consequences due to male behavior.
 
+The researchers collected data on kinship, dominance, and infant survival among many other factors.  They used linear mixed modeling to determine which other characters were most related to dyadic bond strength (Table 1).  Later, we see them graph this bond strength against kin category, again using an LMM as well as ggplot (Figure 1). Additionally, we see the authors graph group 1's rank over several years.  They divide this by individual(Figure s5).  The authors included many other figures and tables, but for this exercise, we will focus on the three that I have just mentioned. 
+
 # **Working with the Data**
-We begin by downloading the data, so that we may work with it.  The authors of this paper put two excel sheets onto [this webpage](https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.93463).  Only one of them will be relevant to this project. 
+We begin by downloading the data, so that we may work with it.  The authors of this paper put two excel sheets onto [this webpage](https://datadryad.org/stash/dataset/doi:10.5061%2Fdryad.93463).  Only one of them will be relevant to this project. For one of these analyses, you will see that we slightly modified the data on excel in order to make analysis on r easier. 
 ```{r - Download Data,message=FALSE,warning=FALSE}
 library(curl)
 f <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+#This is the data as the authors posted it to dryad. 
 d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
-head(d) #This will help us see the top 6 lines of every row. 
-names(d) #Having the names spelled out like this will help us with our model later!
+#We give the data a name so that we can use it. 
+head(d) 
+#This will help us see the top 6 lines of every row. 
+names(d) 
+#Having the names spelled out like this will help us with our model later!
 #For future reference, remember that we are calling our data 'd'.
 df <-read.delim2("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Kalbitzer_et_al_capuchin_sociality_dyadic_data.csv")
+#This puts our data into a data frame. 
 ```
 
 Female social bonds vary between and within dyads.  The coefficient of variation was **86%** between dyads and **67%** within the same dyad over time.  The variation in bond strength *both within and between* dyads is significantly related to three of the tested variables;
@@ -74,6 +81,8 @@ Female social bonds vary between and within dyads.  The coefficient of variation
 
 3. Presence of female infants 
 
+Lets take a look at some of these dyads and why they vary.
+
 ## ***Predictors of Dyadic Bond Strength*** 
 
 The first thing we are going to do is replicate the first table in the paper.  Table 1 illustrates the following predictors of dyadic bond strength: R-value, Age difference, Rank difference, Male infant present, Female infant present.
@@ -83,29 +92,33 @@ I started by putting the data into a data frame so I could get a better look at 
 library(curl)
 f1<-curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Data%202.csv")
 d1 <- read.csv(f1, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+#This is the data.
 head(d1)
-names(df2)
+names(d1)
 df2 <- curl("https://raw.githubusercontent.com/ZoeEAlbert/zalbert-data-replication-assignment/main/Data%202.csv")
 df2 <- read.csv(df2, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+#This is the data frame. 
 names(df2)
-library(lme4) #Now, let's go to the library to get the package (lme4) that we need. 
-##########lmm <- lmer(data = df2, Log ~ Rank.Difference + AgeDifference_years_Dyad + RValue_Dyad + Male.Infant.Present + Female.Infant.Present)
-
+library(lme4) 
+#Now, let's go to the library to get the package (lme4) that we need. 
+lmm <- lmer(data = df2, Log ~ (Rank.Difference) +  (1 | AgeDifference_years_Dyad) + (1 | RValue_Dyad) + (1 | Male.Infant.Present) + (1 | Female.Infant.Present)) 
+#THIS ISNT QUITE RIGHT YET.  I have contacted the lab associated with this paper to no avail.  Because there are 5 different variables and they don't specify which ones are random effects there are 120 possibilities for this code.  Unfortunately, it has taken me several hours to get through 60 iterations of the code to no avail.  Unless I hear back, I am going to have to settle for the code as is!  Fortunately, it all works, it just doesn't produce the correct numbers.
 summary(lmm)
-
-```
-
-coefficients(lme)
-
-full <- lmer(data = d, duration ~ reprocondition + parity + (1 + reprocondition |
-    subject) + (1 + parity | subject), REML = FALSE)
-
-reduced <- lmer(data = d, duration ~ parity + (1 + reprocondition | subject) +
-    (1 + parity | subject), REML = FALSE)
-
+#This contains information that we will then copy into our table. 
+coefficients(lmm)
+full <- lmer(data = df2, Log ~ (Rank.Difference) +  (1 | AgeDifference_years_Dyad) + (1 | RValue_Dyad) + (1 | Male.Infant.Present) + (1 | Female.Infant.Present), REML = FALSE)
+reduced <- lmer(data = df2, Log ~ (Rank.Difference) + (1 | AgeDifference_years_Dyad), REML = FALSE)
+#The authors DO NOT specify what goes in the reduced vs. the full.  How are you supposed to do this if that is the case? 
 anova(reduced, full, test = "Chisq")
-
-As a point of reference, here is what it should look like, based upon the paper.  
+#Because the random effects were not specified, this was a very long process of trial and error....  I feel confident that log should be before ~
+#I JUST DON'T UNDERSTAND WHY THEY DIDN'T JUST WRITE THEM DOWN!!!!!
+#It was at this point that I contacted everyone I have ever known or been in contact with who might have known how to use r...I am getting numbers they are just the wrong numbers.
+#All of this runs, which I am very proud of, but until I can get info from the authors about which are the random effects I am not in hot shape. 
+```
+The table shows that R-value, Rank difference, and Female infant present were the only categories that were significant. 
+I believe that the authors took their data from R and then made a pretty table on excel.  So, that is what I did. 
+As a point of reference, here is what it should look like, based upon the published table.
+![Table 1, (Zoe's Version)](Table 1- (Zoe's version).png)
 ![Table 1, as seen in the original paper](Table 1.2.png)
 
 
@@ -117,25 +130,29 @@ The next thing that I wanted to replicate was the first figure from the paper.  
 str(d)
 d[8]<-as.factor(d$KinshipCategory_Dyad)
 DSI<- log(d$DSI+.1)
+#Since they took the log and added 1 to the DSI, we can do that here. 
 plot(d$KinshipCategory_Dyad, log(d$DSI+.1))
 #After some trial and error, I learned that I could add the log and .1 in r, and don't have to go back to excel to do so.  I appreciate that a lot. 
 ```
 
-This looks okay, but I think we can make it look better!
+This looks okay, but I think we can make it look better, and more like the published figure!  The authors do not specify how they do this, but I think it is likely ggplot. 
 
 ```{r - Figure 1.ggplot, message=FALSE,warning=FALSE}
 #Next, let's try the same thing but with ggplot to make things a bit more fanciful, and true to the published paper.  By using this package, we are able to add boxes, points, themes and more.  
-library(ggplot2) #Let's invite ggplot to the party. 
+library(ggplot2) 
+#Let's invite ggplot to the party. 
 library(ggsignif)
 library(magrittr)
-levels(d$KinshipCategory_Dyad) #The levels function will make sure that my categories can appear in the order I want them to. 
-d$KinshipCategory_Dyad <-factor(d$KinshipCategory_Dyad, levels = c( "mother-offspring", "full sib", "maternal sib", "paternal sib", "maternal non-kin", "Excluded from model testing for effect of kinship categories" )) #I have to list the categories as they appear on the excel document. 
+levels(d$KinshipCategory_Dyad) 
+#The levels function will make sure that my categories can appear in the order I want them to.  Unfortunately, it will be very difficult to get rid of the unnecessary category.  
+d$KinshipCategory_Dyad <-factor(d$KinshipCategory_Dyad, levels = c( "mother-offspring", "full sib", "maternal sib", "paternal sib", "maternal non-kin", "Excluded from model testing for effect of kinship categories" )) 
+#I have to list the categories as they appear on the excel document. 
 levels(d$KinshipCategory_Dyad)
 #Please note that after running this code, my kinship categories were not in the same order as they appear in the presented figure.  To fix the order, I used the levels function.
 ggplot(data = d, mapping = aes(x = KinshipCategory_Dyad, y = log(d$DSI+.1)))+geom_boxplot(data = d)+geom_jitter(data=d)+theme_bw()+ geom_signif(comparisons = list("mother-offspring", "full sib", "maternal sib", "paternal sib", "non-kin", "Excluded from model testing for effect of kinship categories"), map_signif_level=TRUE)+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
-#Bellow is the code that Dr. Schmitt and I worked on together in office hours.  Unfortunatly, when I got home, this code would no longer run nor would it exclude the category "Excluded from model testing for effect of kinship categories".
+#Bellow is the code that Dr. Schmitt and I worked on together in office hours.  Unfortunately, when I got home, this code would no longer run nor would it exclude the category "Excluded from model testing for effect of kinship categories".
     #ggplot(data = d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories"), mapping = aes(x x = = KinshipCategory_Dyad, y = log(DSI+.1)))+ geom_boxplot(data = d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories")) + geom_jitter(data=d %>% filter(KinshipCategory_Dyad != "Excluded from model testing for effect of kinship categories")) + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 #I found geom_jitter online and it worked to make sure my points didn't just show up in a straight line!
@@ -143,14 +160,15 @@ panel.background = element_blank(), axis.line = element_line(colour = "black"))
 #We also, still want to add the significance.  I have tried many different means of doing this.  I think I need to do each one manually, using code found [here](https://cran.r-project.org/web/packages/ggsignif/vignettes/intro.html).  This code does not produce the same kind of lines that I am looking for, I think this must have been accomplished using Photoshop. 
 ```
  ![Based upon the published paper, here is what the graph should actually look like](F1.large.jpg) 
-The graph that we produced looks pretty good compared to the graph that the author's submitted. 
+ 
+The graph that we produced looks pretty good compared to the graph that the author's submitted.  I am satisfied with this, especially because I do not know how to use Photoshop. 
 
 ## ***Rank of a Group, Measured Over Years***
 
-This graph, which is one of six, shows the rank of individuals in group one over the time span: 2005-2011.
+This next graph, which is one of six, shows the rank of individuals in group one over the time span: 2005-2011.
 
 ```{r - Figure S5. data and baseplot}
-#Because the data on dyad was incomplete, I first had to do some data manipulation.  And boy are my arms tired. 
+#Because the data on dyad was incomplete, I first had to do some data manipulation.  (And boy are my arms tired). 
 group1<- subset(d, Group_ID == 1)
 group1
 View(group1)
@@ -189,6 +207,8 @@ legend("topright", legend=c("1", "2", "8", "11", "18", "26", "27", "28", "29", "
 #This is clearly not great. BOOOOOOOO.  There is no good way to do a line here.  Let's do ggplot instead.
 ```
 
+ggplot is up next!
+
 ```{r - Figure S5. ggplot}
 #Lets try ggplot instead, which we can get to by opening up tidyverse.
 library(tidyverse)
@@ -199,7 +219,9 @@ ggplot(data = group1_r, mapping = aes(Year, Rank,group=ID))+  geom_line(aes(line
 ```
 ![Here is the graph as published.  For the graph that we recreated, take a look at the bottom left figure, entitled "Group 1".](F7.large.jpg)
 
-In conclusion, 
+After spending a frustrating amount of time on table 1, I decided maybe table s2 would go better.  But...alas...it did not!  Why?  Because half of the information was inaccessible.  I could not find which individuals were with which group (and this is coming from someone who lived and worked with these groups for several months).  The dates (Period Start and Period End) were also not available.  It is possible I could have figured out the infant survival with some work. 
 
 As much as I love these Capuchin monkeys, this was the second paper that I choose and it was incredibly difficult to replicate. There were certain aspects that were not well defined and/or organized.  I don't understand why some of the calculations were not saved in the excel file.  Obviously they had to do more work on r because of this (and it also made it much more difficult to replicate).  Additionally, it was not always clear what variables they used in the LMMs.
 Truly this is one of the most difficult, frustrating, rewarding courses I have ever taken.  Am I amazing at stats or coding?  No.  Am I working my butt off and excited to continue to? Yes. 
+
+PLESE NOTE: I used so many resources when doing this assignment.  I feel as though I practically lived in your office hours.  Mel and I spent uupwards of 4 hours working on this together.  I reached out to the PhD student working at the lab where this paper was written for advice on the lmm.  I reached out to FIVE of my PhD student friends across the country to help me figure this out. My blood, sweat and tears are in this code. 
